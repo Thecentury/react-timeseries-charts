@@ -41,6 +41,13 @@ const defaultTitleStyle = {
     fill: "#C0C0C0"
 };
 
+const defaultChartRowTitleStyle = {
+    fontWeight: 90,
+    fontSize: 13,
+    font: '"Goudy Bookletter 1911", sans-serif"',
+    fill: "#606060"
+};
+
 const defaultTrackerStyle = {
     line: {
         stroke: "#999",
@@ -160,6 +167,7 @@ export default class ChartContainer extends React.Component {
         }
 
         const chartRows = [];
+        const chartRowTitles = [];
         const leftAxisWidths = [];
         const rightAxisWidths = [];
 
@@ -332,7 +340,14 @@ export default class ChartContainer extends React.Component {
                     onTimeRangeChanged: this.handleTimeRangeChanged,
                     onTrackerChanged: this.handleTrackerChanged
                 };
-                const transform = `translate(${-leftWidth - paddingLeft},${yPosition})`;
+
+                let { titleHeight = 28 } = child.props;
+                if (_.isUndefined(child.props.title)) {
+                    titleHeight = 0;
+                }
+
+                const transform = `translate(${-leftWidth - paddingLeft},${yPosition +
+                    titleHeight})`;
                 if (isVisible) {
                     chartRows.push(
                         <g transform={transform} key={rowKey}>
@@ -340,9 +355,32 @@ export default class ChartContainer extends React.Component {
                         </g>
                     );
 
-                    let { titleHeight = 28 } = child.props;
-                    if (_.isUndefined(child.props.title)) {
-                        titleHeight = 0;
+                    if (!_.isUndefined(child.props.title)) {
+                        const rowTitleKey = `chart-row-row-title-${i}`;
+
+                        const titleStyle = merge(
+                            true,
+                            defaultChartRowTitleStyle,
+                            child.props.titleStyle ? child.props.titleStyle : {}
+                        );
+                        const titleTransform = `translate(${-leftWidth -
+                            paddingLeft},${yPosition})`;
+                        const title = (
+                            <g transform={titleTransform} key={rowTitleKey}>
+                                <Label
+                                    align="left"
+                                    label={child.props.title}
+                                    style={{
+                                        label: titleStyle,
+                                        box: { fill: "white", stroke: "none" }
+                                    }}
+                                    width={props.width}
+                                    height={titleHeight}
+                                />
+                            </g>
+                        );
+
+                        chartRowTitles.push(title);
                     }
 
                     const height = parseInt(child.props.height, 10) + titleHeight;
@@ -452,6 +490,12 @@ export default class ChartContainer extends React.Component {
             </g>
         );
 
+        const rowTitles = (
+            <g transform={`translate(${leftWidth + paddingLeft},${paddingTop + titleHeight})`}>
+                {chartRowTitles}
+            </g>
+        );
+
         //
         // Final render of the ChartContainer is composed of a number of
         // chartRows, a timeAxis and the tracker indicator
@@ -472,6 +516,7 @@ export default class ChartContainer extends React.Component {
                 {rows}
                 {tracker}
                 {timeAxis}
+                {rowTitles}
             </svg>
         ) : (
             <svg
@@ -483,6 +528,7 @@ export default class ChartContainer extends React.Component {
                 {title}
                 {timeAxis}
                 {rows}
+                {rowTitles}
                 {tracker}
             </svg>
         );

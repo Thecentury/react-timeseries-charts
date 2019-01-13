@@ -9,7 +9,6 @@
  */
 
 import _ from "underscore";
-import merge from "merge";
 import React from "react";
 import PropTypes from "prop-types";
 import { easeSinOut } from "d3-ease";
@@ -21,7 +20,6 @@ import YAxis from "./YAxis";
 import Charts from "./Charts";
 import MultiBrush from "./MultiBrush";
 import TimeMarker from "./TimeMarker";
-import Label from "./Label";
 import ScaleInterpolator from "../js/interpolators";
 
 const AXIS_MARGIN = 5;
@@ -50,13 +48,6 @@ function createScale(yaxis, type, min, max, y0, y1) {
     }
     return scale;
 }
-
-const defaultTitleStyle = {
-    fontWeight: 90,
-    fontSize: 13,
-    font: '"Goudy Bookletter 1911", sans-serif"',
-    fill: "#707070"
-};
 
 /**
  * A ChartRow is a container for a set of YAxis and multiple charts
@@ -107,7 +98,7 @@ export default class ChartRow extends React.Component {
         (_.has(child.props, "min") && _.has(child.props, "max"));
 
     updateScales(props) {
-        const innerHeight = +props.height - AXIS_MARGIN * 2;
+        const innerHeight = +this.props.height - AXIS_MARGIN * 2;
         const rangeTop = AXIS_MARGIN;
         const rangeBottom = innerHeight - AXIS_MARGIN;
         React.Children.forEach(props.children, child => {
@@ -172,11 +163,7 @@ export default class ChartRow extends React.Component {
         const axes = []; // Contains all the yAxis elements used in the render
         const chartList = []; // Contains all the Chart elements used in the render
         // Dimensions
-        let { titleHeight = 28 } = this.props;
-        if (_.isUndefined(this.props.title)) {
-            titleHeight = 0;
-        }
-        const innerHeight = +this.props.height - AXIS_MARGIN * 2 + titleHeight;
+        const innerHeight = +this.props.height - AXIS_MARGIN * 2;
 
         //
         // Build a map of elements that occupy left or right slots next to the
@@ -249,7 +236,7 @@ export default class ChartRow extends React.Component {
             if (colWidth > 0 && leftColumnIndex < leftAxisList.length) {
                 id = leftAxisList[leftColumnIndex];
                 if (_.has(yAxisMap, id)) {
-                    transform = `translate(${posx + paddingLeft},${titleHeight})`;
+                    transform = `translate(${posx + paddingLeft},0)`;
 
                     // Additional props for left aligned axes
                     props = {
@@ -283,7 +270,7 @@ export default class ChartRow extends React.Component {
             if (colWidth > 0 && rightColumnIndex < rightAxisList.length) {
                 id = rightAxisList[rightColumnIndex];
                 if (_.has(yAxisMap, id)) {
-                    transform = `translate(${posx + paddingLeft},${titleHeight})`;
+                    transform = `translate(${posx + paddingLeft},0)`;
 
                     // Additional props for right aligned axes
                     props = {
@@ -457,7 +444,7 @@ export default class ChartRow extends React.Component {
             const trackerStyle = {
                 pointerEvents: "none"
             };
-            const trackerTransform = `translate(${leftWidth + paddingLeft},${titleHeight})`;
+            const trackerTransform = `translate(${leftWidth + paddingLeft},0)`;
 
             tracker = (
                 <g key="tracker-group" style={trackerStyle} transform={trackerTransform}>
@@ -466,30 +453,8 @@ export default class ChartRow extends React.Component {
             );
         }
 
-        // Chart title
-        const titleTransform = `translate(${paddingLeft},0)`;
-        const titleStyle = merge(
-            true,
-            defaultTitleStyle,
-            this.props.titleStyle ? this.props.titleStyle : {}
-        );
-        const title = this.props.title ? (
-            <g transform={titleTransform}>
-                <Label
-                    align="left"
-                    label={this.props.title}
-                    style={{ label: titleStyle, box: { fill: "none", stroke: "none" } }}
-                    width={chartWidth}
-                    height={titleHeight}
-                />
-            </g>
-        ) : (
-            <g />
-        );
-
         return (
             <g>
-                {title}
                 {clipper}
                 {axes}
                 {charts}
