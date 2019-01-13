@@ -45,7 +45,7 @@ const defaultChartRowTitleStyle = {
     fontWeight: 90,
     fontSize: 13,
     font: '"Goudy Bookletter 1911", sans-serif"',
-    fill: "#707070"
+    fill: "#606060"
 };
 
 const defaultTrackerStyle = {
