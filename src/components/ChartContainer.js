@@ -45,7 +45,7 @@ const defaultChartRowTitleLabelStyle = {
     fontWeight: 100,
     fontSize: 13,
     font: '"Goudy Bookletter 1911", sans-serif"',
-    fill: "#111"
+    fill: "#000"
 };
 
 const defaultChartRowTitleBoxStyle = {
