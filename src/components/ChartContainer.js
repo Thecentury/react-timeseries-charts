@@ -372,7 +372,7 @@ export default class ChartContainer extends React.Component {
                                     label={child.props.title}
                                     style={{
                                         label: titleStyle,
-                                        box: { fill: "orange", stroke: "none" }
+                                        box: { fill: "white", stroke: "none" }
                                     }}
                                     width={props.width}
                                     height={titleHeight}
