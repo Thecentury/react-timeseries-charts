@@ -524,9 +524,13 @@ ChartRow.propTypes = {
     titleHeight: PropTypes.number,
 
     /**
-     * Specify the styling of the chart's title
+     * Specify the styling of the chart row's title
      */
     titleStyle: PropTypes.object,
+    /**
+     * Specify the styling of the box behind chart row's title
+     */
+    titleBoxStyle: PropTypes.object,
 
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
     leftAxisWidths: PropTypes.arrayOf(PropTypes.number),

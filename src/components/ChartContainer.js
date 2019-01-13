@@ -41,11 +41,16 @@ const defaultTitleStyle = {
     fill: "#C0C0C0"
 };
 
-const defaultChartRowTitleStyle = {
+const defaultChartRowTitleLabelStyle = {
     fontWeight: 90,
     fontSize: 13,
     font: '"Goudy Bookletter 1911", sans-serif"',
-    fill: "#606060"
+    fill: "#555"
+};
+
+const defaultChartRowTitleBoxStyle = {
+    fill: "white",
+    stroke: "none"
 };
 
 const defaultTrackerStyle = {
@@ -358,10 +363,15 @@ export default class ChartContainer extends React.Component {
                     if (!_.isUndefined(child.props.title)) {
                         const rowTitleKey = `chart-row-row-title-${i}`;
 
-                        const titleStyle = merge(
+                        const titleLabelStyle = merge(
                             true,
-                            defaultChartRowTitleStyle,
+                            defaultChartRowTitleLabelStyle,
                             child.props.titleStyle ? child.props.titleStyle : {}
+                        );
+                        const titleBoxStyle = merge(
+                            true,
+                            defaultChartRowTitleBoxStyle,
+                            child.props.titleBoxStyle ? child.props.titleBoxStyle : {}
                         );
                         const titleTransform = `translate(${-leftWidth -
                             paddingLeft},${yPosition})`;
@@ -371,8 +381,8 @@ export default class ChartContainer extends React.Component {
                                     align="left"
                                     label={child.props.title}
                                     style={{
-                                        label: titleStyle,
-                                        box: { fill: "white", stroke: "none" }
+                                        label: titleLabelStyle,
+                                        box: titleBoxStyle
                                     }}
                                     width={props.width}
                                     height={titleHeight}
